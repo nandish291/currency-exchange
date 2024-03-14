@@ -20,26 +20,21 @@ public class CurrencyExchangeController {
   @Autowired
   private Environment environment;
 
-  private Logger logger = LoggerFactory.getLogger(CurrencyExchangeController.class);
+  private final Logger logger = LoggerFactory.getLogger(CurrencyExchangeController.class);
 
   @GetMapping("currency-exchange/from/{from}/to/{to}")
 //  @Retry(name = "currency-exchange")
 //  @CircuitBreaker(name = "default", fallbackMethod = "exchangeFailure")
 //  @RateLimiter(name = "currency-exchange")
-  public CurrencyExchange exchange(@PathVariable("from")String from, @PathVariable("to")String to) throws Exception {
+  public CurrencyExchange exchange(@PathVariable("from")String from, @PathVariable("to")String to){
     CurrencyExchange currencyExchange = exchangeService.exchangeCurrency(from, to);
 
     String port = environment.getProperty("server.port");
     String host = environment.getProperty("HOSTNAME");
-    currencyExchange.setEnvironment(port+ " "+ host + " v11");
+    String version = "v11";
+    currencyExchange.setEnvironment(port+ " "+ host + " version: "+ version);
     logger.info("exchange called with"+ from + "to" + to);
 //    throw new Exception();
-    return currencyExchange;
-  }
-
-  public CurrencyExchange exchangeFailure(Exception ex){
-    CurrencyExchange currencyExchange = new CurrencyExchange();
-    currencyExchange.setEnvironment("Error Occurred, Please try again");
     return currencyExchange;
   }
 }
